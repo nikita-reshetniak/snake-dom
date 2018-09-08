@@ -1,0 +1,19 @@
+{
+  "name": "snake-dom",
+  "version": "0.0.1",
+  "description": "snake game",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": " D:/Nikita/Git/snake-dom/.git/"
+  },
+  "author": "Nikita Reshetniak",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.24.7",
+    "eslint": "^5.5.0"
+  }
+}
