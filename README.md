@@ -12,5 +12,5 @@ git clone https://github.com/nikita-reshetniak/snake-dom.git
 
 ```
 npm install
-npm install
 ```
+
