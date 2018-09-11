@@ -1,13 +1,14 @@
-var mapSize = 10;
-var i, j;
+var gridSize = 11;
 
-for(i = 0; i < mapSize; i++){
+var fragment = document.createDocumentFragment();
+for(var i = 1; i <= gridSize; i++){
     var divRow = document.createElement("div");
-    divRow.className = "row row-" + i;
-    document.body.appendChild(divRow);
-    for (j = 0; j < mapSize; j++){
+    divRow.classList.add("row", "row-" + i);
+    for(var j = 1; j <= gridSize; j++){
         var divCell = document.createElement("div");
-        divCell.className = "cell cell-" + j;
-        document.body.appendChild(divCell);
+        divCell.classList.add("cell", "cell-" + j);
+        divRow.appendChild(divCell);
     }
+    fragment.appendChild(divRow);
 }
+gridWrapper.appendChild(fragment);
