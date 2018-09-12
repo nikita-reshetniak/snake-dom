@@ -1,27 +1,62 @@
-var gridSize = 11;
+var gridSize = 40;
 var gridCenter = Math.round(gridSize/2);
-var i, j;
 
-for(i = 1; i <= gridSize; i++){
+var fragment = document.createDocumentFragment();
+for(var i = 1; i <= gridSize; i++){
     var divRow = document.createElement("div");
     divRow.classList.add("row", "row-" + i);
-    gridWraper.appendChild(divRow);
-    for (j = 1; j <= gridSize; j++){
+    for(var j = 1; j <= gridSize; j++){
         var divCell = document.createElement("div");
         divCell.classList.add("cell", "cell-" + j);
         divRow.appendChild(divCell);
     }
+    fragment.appendChild(divRow);
+}
+gridWrapper.appendChild(fragment);
+
+
+var centralRow = document.querySelector(".row-" + gridCenter);
+
+for(var i = gridCenter - 1; i <= gridCenter + 1; i++){
+    centralRow.querySelector(".cell-" + i)
+        .classList.add("activeCell");
 }
 
-var centerRow = document.getElementsByClassName("row-" + gridCenter);       // Find central row 
-var centerCell = centerRow[0].getElementsByClassName("cell-" + gridCenter); // find central cell of that row
-centerCell[0].classList.add("activeCell");                                  // add class activeCell to the central cell for black background
+var rows = document.querySelectorAll(".row");
+var cells = [];
 
-var centerRowCells = centerRow[0].children; // HTMLCollection with cells of center row
+for(var i = 0; i < gridSize; i++){
+    cells[i] = rows[i].children;
+}
 
-for(i = 0; i < gridSize - 1; i++){
-    if(centerRowCells[i].classList.contains("activeCell")){ // Search for <div> with class activeCell
-        centerRowCells[i].classList.remove("activeCell");   // remove class activeCell from that <div>
-        centerRowCells[i + 1].classList.add("activeCell");  // add class activeCell to the next <div>
+var fps = 10;
+function move() {
+    setTimeout(function(){
+        requestAnimationFrame(move);
+        for (i = 0; i < gridSize - 1; i++) {
+            if (cells[gridCenter - 1][i].classList.contains("activeCell")) {
+                cells[gridCenter - 1][i].classList.remove("activeCell");
+                cells[gridCenter - 1][i + 3].classList.add("activeCell");
+                break;
+            }
+        }
+    }, 1000 / fps);
+}
+
+// function move(){
+//     requestAnimationFrame(move);
+//     for (i = 0; i < gridSize - 1; i++) {
+//         if (cells[gridCenter - 1][i].classList.contains("activeCell")) {
+//             cells[gridCenter - 1][i].classList.remove("activeCell");
+//             cells[gridCenter - 1][i + 3].classList.add("activeCell");
+//             break;
+//         }
+//     }
+// }
+
+document.addEventListener("keydown", function(e){
+    if(e.keyCode == 39){
+        move();
     }
-}
+})
+
