@@ -1,4 +1,4 @@
-var gridSize = 40;
+var gridSize = 11;
 var gridCenter = Math.round(gridSize/2);
 
 var fragment = document.createDocumentFragment();
@@ -42,17 +42,6 @@ function move() {
         }
     }, 1000 / fps);
 }
-
-// function move(){
-//     requestAnimationFrame(move);
-//     for (i = 0; i < gridSize - 1; i++) {
-//         if (cells[gridCenter - 1][i].classList.contains("activeCell")) {
-//             cells[gridCenter - 1][i].classList.remove("activeCell");
-//             cells[gridCenter - 1][i + 3].classList.add("activeCell");
-//             break;
-//         }
-//     }
-// }
 
 document.addEventListener("keydown", function(e){
     if(e.keyCode == 39){
