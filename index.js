@@ -14,14 +14,10 @@ for(var i = 1; i <= gridSize; i++){
 }
 gridWrapper.appendChild(fragment);
 
-var rows = Array.from(document.getElementsByClassName("row"));
-var cells = [];
 
-for(var i = 0; i < gridSize; i++){
-    cells[i] = rows[i].children;
+var centralRow = document.querySelector(".row-" + gridCenter);
+
+for(var i = gridCenter - 1; i <= gridCenter + 1; i++){
+    centralRow.querySelector(".cell-" + i)
+        .classList.add("activeCell");
 }
-
-cells[gridCenter - 1][gridCenter - 2].classList.add("activeCell");
-cells[gridCenter - 1][gridCenter - 1].classList.add("activeCell");
-cells[gridCenter - 1][gridCenter].classList.add("activeCell");
-
