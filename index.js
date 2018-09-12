@@ -29,14 +29,20 @@ for(var i = 0; i < gridSize; i++){
     cells[i] = rows[i].children;
 }
 
+var snakeLength = 3;
 var fps = 10;
+
+
 function move() {
     setTimeout(function(){
         requestAnimationFrame(move);
         for (i = 0; i < gridSize - 1; i++) {
-            if (cells[gridCenter - 1][i].classList.contains("activeCell")) {
-                cells[gridCenter - 1][i].classList.remove("activeCell");
-                cells[gridCenter - 1][i + 3].classList.add("activeCell");
+            if((gridSize - snakeLength - 1) < i){                             // If distance to the border == snake length -> Game Over
+                document.querySelector("#message").innerHTML = "Game Over"; // Change "Snake Game" to "Game Over"
+                break;
+            } else if (cells[gridCenter - 1][i].classList.contains("activeCell")) { // If cell[y][x] contain class activeCell
+                cells[gridCenter - 1][i].classList.remove("activeCell");            // remove activeCell from first div
+                cells[gridCenter - 1][i + 3].classList.add("activeCell");           // and add it to the fourth counting from this div
                 break;
             }
         }
