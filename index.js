@@ -1,4 +1,5 @@
 var gridSize = 11;
+var gridCenter = Math.round(gridSize/2);
 
 var fragment = document.createDocumentFragment();
 for(var i = 1; i <= gridSize; i++){
@@ -12,3 +13,11 @@ for(var i = 1; i <= gridSize; i++){
     fragment.appendChild(divRow);
 }
 gridWrapper.appendChild(fragment);
+
+
+var centralRow = document.querySelector(".row-" + gridCenter);
+
+for(var i = gridCenter - 1; i <= gridCenter + 1; i++){
+    centralRow.querySelector(".cell-" + i)
+        .classList.add("activeCell");
+}

@@ -5,3 +5,7 @@
     display: inline-block;
     margin: 0 1px;
 }
+
+.activeCell{
+    background-color: black;
+}
