@@ -1,7 +1,7 @@
 var gridSize = 11;
 var gridCenter = Math.round(gridSize/2);
 
-var fragment = document.createDocumentFragment();
+var fragment = document.createDocumentFragment();       //<<< Create grid - start
 for(var i = 1; i <= gridSize; i++){
     var divRow = document.createElement("div");
     divRow.classList.add("row", "row-" + i);
@@ -12,46 +12,64 @@ for(var i = 1; i <= gridSize; i++){
     }
     fragment.appendChild(divRow);
 }
-gridWrapper.appendChild(fragment);
+gridWrapper.appendChild(fragment);                      //>>> Create grid - end
 
-
-var centralRow = document.querySelector(".row-" + gridCenter);
-
-for(var i = gridCenter - 1; i <= gridCenter + 1; i++){
-    centralRow.querySelector(".cell-" + i)
-        .classList.add("activeCell");
-}
 
 var rows = document.querySelectorAll(".row");
 var cells = [];
 
-for(var i = 0; i < gridSize; i++){
+for(var i = 0; i < gridSize; i++){      // Add all cells to the Array
     cells[i] = rows[i].children;
 }
 
-var snakeLength = 3;
 var fps = 10;
+var x = gridCenter - 1;
+var y = gridCenter - 1;
+var xStep = 0;
+var yStep = 0;
 
-
-function move() {
-    setTimeout(function(){
-        requestAnimationFrame(move);
-        for (i = 0; i < gridSize - 1; i++) {
-            if((gridSize - snakeLength - 1) < i){                             // If distance to the border == snake length -> Game Over
-                document.querySelector("#message").innerHTML = "Game Over"; // Change "Snake Game" to "Game Over"
-                break;
-            } else if (cells[gridCenter - 1][i].classList.contains("activeCell")) { // If cell[y][x] contain class activeCell
-                cells[gridCenter - 1][i].classList.remove("activeCell");            // remove activeCell from first div
-                cells[gridCenter - 1][i + 3].classList.add("activeCell");           // and add it to the fourth counting from this div
-                break;
-            }
-        }
-    }, 1000 / fps);
+function clear(){
+    cells[y][x].classList.remove("activeCell");
 }
 
+function draw(){
+    x += xStep;
+    y += yStep;
+    cells[y][x].classList.add("activeCell");
+}
+
+draw();
+
+function move(){
+    if(cells[y][x]){
+        setTimeout(function(){
+            requestAnimationFrame(move);
+            clear();
+            draw();
+        }, 1000 / fps);
+    }
+}
+
+move();
+
 document.addEventListener("keydown", function(e){
-    if(e.keyCode == 39){
-        move();
+    switch(e.keyCode){
+        case 37:
+            xStep = (-1);
+            yStep = 0
+            break;
+        case 38:
+            xStep = 0;
+            yStep = (-1);
+            break;
+        case 39:
+            xStep = 1;
+            yStep = 0;
+            break;
+        case 40:
+            xStep = 0;
+            yStep = 1;
+            break;
     }
 })
 
