@@ -29,10 +29,17 @@ var xStep = 0;
 var yStep = 0;
 
 function clear(){
+    if(y + yStep > gridSize - 1 || y + yStep < 0 || x + xStep > gridSize - 1 || x + xStep < 0) { // If snake hit the board
+        document.querySelector("#message").innerHTML = "Game Over";                                // Change "Snake Game" to "Game Over"
+        return;
+    }
     cells[y][x].classList.remove("activeCell");
 }
 
 function draw(){
+    if(y + yStep > gridSize - 1 || y + yStep < 0 || x + xStep > gridSize - 1 || x + xStep < 0) {
+        return;
+    }
     x += xStep;
     y += yStep;
     cells[y][x].classList.add("activeCell");
