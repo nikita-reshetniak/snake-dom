@@ -27,13 +27,15 @@ var x = gridCenter - 1;
 var y = gridCenter - 1;
 var xStep = 0;
 var yStep = 0;
+var snake = [];
 
 function clear(){
     if(y + yStep > gridSize - 1 || y + yStep < 0 || x + xStep > gridSize - 1 || x + xStep < 0) { // If snake hit the board
         document.querySelector("#message").innerHTML = "Game Over";                                // Change "Snake Game" to "Game Over"
         return;
     }
-    cells[y][x].classList.remove("activeCell");
+    snake[0].classList.remove("activeCell");
+    snake.shift();
 }
 
 function draw(){
@@ -43,15 +45,21 @@ function draw(){
     x += xStep;
     y += yStep;
     cells[y][x].classList.add("activeCell");
+    snake.push(cells[y][x]);
 }
 
+cells[5][9].classList.add("food");
 draw();
 
 function move(){
     if(cells[y][x]){
         setTimeout(function(){
             requestAnimationFrame(move);
-            clear();
+            if(!snake[snake.length - 1].classList.contains("food")){
+                clear();
+            } else{
+                snake[snake.length - 1].classList.remove("food");
+            }
             draw();
         }, 1000 / fps);
     }
