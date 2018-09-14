@@ -1,4 +1,4 @@
-var gridSize = 11;
+var gridSize = 21;
 var gridCenter = Math.round(gridSize/2);
 
 var fragment = document.createDocumentFragment();       //<<< Create grid - start
@@ -48,7 +48,11 @@ function draw(){
     snake.push(cells[y][x]);
 }
 
-cells[5][9].classList.add("food");
+// cells[5][9].classList.add("food");
+// cells[y][x-2].classList.add("activeCell");
+snake.push(cells[y][x-1]);
+snake.push(cells[y][x-2]);
+
 draw();
 
 function move(){
@@ -70,20 +74,28 @@ move();
 document.addEventListener("keydown", function(e){
     switch(e.keyCode){
         case 37:
-            xStep = (-1);
-            yStep = 0
+            if(xStep == 0){
+                xStep = (-1);
+                yStep = 0;
+            }
             break;
         case 38:
-            xStep = 0;
-            yStep = (-1);
+            if(yStep == 0){
+                xStep = 0;
+                yStep = (-1);
+            }
             break;
         case 39:
-            xStep = 1;
-            yStep = 0;
+            if(xStep == 0){
+                xStep = 1;
+                yStep = 0;
+            }
             break;
         case 40:
-            xStep = 0;
-            yStep = 1;
+            if(yStep == 0){
+                xStep = 0;
+                yStep = 1;
+            }
             break;
     }
 })
