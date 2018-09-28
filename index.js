@@ -2,18 +2,37 @@ var gridSize = 11;
 var gridCenter = Math.round(gridSize/2);
 var cells = [];
 var fps = 10;
-var x = gridCenter - 1;
+
+var x = gridCenter;
 var y = gridCenter - 1;
 var xStep = 0;
 var yStep = 0;
+
 // For keydownHandler function
 var firstTime = true;
 
 makeGrid();
 addCellsToArray();
-addSnakeCell();
+addSnake();
 
 document.addEventListener("keydown", keydownHandler);
+
+function Cell(x, y){
+    this.x = x;
+    this.y = y;
+}
+
+var snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)]
+
+function changeSnakeCellCoordinates(){
+    for(var i = 0; i < snakeArray.length - 1; i++){
+        snakeArray[i].x = snakeArray[i+1].x;
+        snakeArray[i].y = snakeArray[i+1].y;
+    }
+
+    snakeArray[snakeArray.length - 1].x = x;
+    snakeArray[snakeArray.length - 1].y = y;
+}
 
 // Make grid of div elements
 function makeGrid(){
@@ -39,16 +58,24 @@ function addCellsToArray() {
     }
 }
 
-// Add class "activeCell" to the cell
+// Add snake to the center of grid
+function addSnake(){
+    cells[y][x - 2].classList.add("activeCell");
+    cells[y][x - 1].classList.add("activeCell");
+    cells[y][x].classList.add("activeCell");
+}
+
+// Add class "activeCell" add next to the head cell
 function addSnakeCell(){
     x += xStep;
     y += yStep;
     cells[y][x].classList.add("activeCell");
+
 }
 
 // Remove class "activeCell" from the cell
 function removeSnakeCell(){
-    cells[y][x].classList.remove("activeCell");
+    cells[snakeArray[0].y][snakeArray[0].x].classList.remove("activeCell");
 }
 
 // Move the snake
@@ -57,6 +84,7 @@ function snakeMove(){
         requestAnimationFrame(snakeMove);
         removeSnakeCell();
         addSnakeCell();
+        changeSnakeCellCoordinates();
     }, 1000 / fps);
 }
 
@@ -64,20 +92,28 @@ function snakeMove(){
 function keydownHandler(e){
     switch (e.keyCode) {
         case 37:
-            xStep = -1;
-            yStep = 0
+            if (xStep === 0) {
+                xStep = -1;
+                yStep = 0
+            }
             break;
         case 38:
-            xStep = 0;
-            yStep = -1;
+            if (yStep === 0) {
+                xStep = 0;
+                yStep = -1;
+            }
             break;
         case 39:
-            xStep = 1;
-            yStep = 0;
+            if (xStep === 0) {
+                xStep = 1;
+                yStep = 0;
+            }
             break;
         case 40:
-            xStep = 0;
-            yStep = 1;
+            if (yStep === 0) {
+                xStep = 0;
+                yStep = 1;
+            }
             break;
     }
     if(firstTime){
