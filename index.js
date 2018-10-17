@@ -27,6 +27,10 @@ function Cell(x, y){
 
 var snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)]
 
+function changeMessage(mes){
+    document.querySelector("#message").innerHTML = mes;
+}
+
 function changeSnakeCellCoordinates(){
     for(var i = 0; i < snakeArray.length - 1; i++){
         snakeArray[i].x = snakeArray[i+1].x;
@@ -134,7 +138,7 @@ function keydownHandler(e){
 }
 
 // Checks whether the snake hit the wall
-function checkGameOver() {
+function isGameOver() {
     if (y + yStep > gridSize - 1 ||
         y + yStep < 0 ||
         x + xStep > gridSize - 1 ||
