@@ -27,7 +27,7 @@ function Cell(x, y){
 
 var snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)]
 
-function changeMessage(mes){
+function setMessage(mes){
     document.querySelector("#message").innerHTML = mes;
 }
 
@@ -143,7 +143,7 @@ function isGameOver() {
         y + yStep < 0 ||
         x + xStep > gridSize - 1 ||
         x + xStep < 0) {
-            document.querySelector("#message").innerHTML = "Game Over";
+            setMessage("Game Over");
             return true;
     }
 }
