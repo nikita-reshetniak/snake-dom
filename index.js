@@ -28,18 +28,18 @@ setupGame();
 document.addEventListener("keydown", keydownHandler);
 
 function setupGame() {
-    if (isGridFitWindow()) {
-        changeMessage("Snake Game");
+    if (doesGridFitWindow()) {
+        setMessage("Snake Game");
         updateVariablesValues();
         makeGrid();
         addCellsToArray();
         addSnake();
     } else {
-        changeMessage("Too Big");
+        setMessage("Too Big");
     }
 }
 
-function isGridFitWindow(){
+function doesGridFitWindow(){
     gridEdge = document.querySelector('[name="gridEdge"]').value;
     gridEdgeLenght = gridEdge * cellEdge;
     if(!(gridEdgeLenght + messageHeight > windowHeight) && !(gridEdgeLenght > windowWidth)){
@@ -77,7 +77,7 @@ function makeGrid(){
 };
 
 function removeGrid() {
-    if (isGridFitWindow()) {
+    if (doesGridFitWindow()) {
         var parent = document.querySelector("#Wrapper");
         var child = document.querySelector("#Wrapper").children[0];
         parent.removeChild(child);
@@ -104,13 +104,13 @@ function snakeMove() {
     timeoutID = setTimeout(function () {
         idRequest = requestAnimationFrame(snakeMove);
         if (isGameOver()) {
-            changeMessage("Game Over");
+            setMessage("Game Over");
             cancelAnimationFrame(idRequest);
             clearTimeout(timeoutID);
         } else {
         removeSnakeCell();
         addSnakeCell();
-        changeSnakeCellCoordinates();
+        setSnakeCellCoordinates();
         };
     }, 1000 / fps);
 }
@@ -125,7 +125,7 @@ function isGameOver() {
     }
 }
 
-function changeMessage(mes){
+function setMessage(mes){
     document.querySelector("#message").innerHTML = mes;
 }
 
@@ -142,7 +142,7 @@ function addSnakeCell(){
 
 }
 
-function changeSnakeCellCoordinates(){
+function setSnakeCellCoordinates(){
     for(var i = 0; i < snakeArray.length - 1; i++){
         snakeArray[i].x = snakeArray[i+1].x;
         snakeArray[i].y = snakeArray[i+1].y;
