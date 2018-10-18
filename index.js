@@ -11,6 +11,9 @@ var yStep = 0;
 // For keydownHandler function
 var firstTime = true;
 
+var timeoutID;
+var idRequest;
+
 makeGrid();
 addCellsToArray();
 addSnake();
@@ -23,6 +26,10 @@ function Cell(x, y){
 }
 
 var snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)]
+
+function setMessage(mes){
+    document.querySelector("#message").innerHTML = mes;
+}
 
 function changeSnakeCellCoordinates(){
     for(var i = 0; i < snakeArray.length - 1; i++){
@@ -79,12 +86,17 @@ function removeSnakeCell(){
 }
 
 // Move the snake
-function snakeMove(){
-    setTimeout(function () {
-        requestAnimationFrame(snakeMove);
+function snakeMove() {
+    timeoutID = setTimeout(function () {
+        idRequest = requestAnimationFrame(snakeMove);
+        if (checkGameOver()) {
+            cancelAnimationFrame(idRequest);
+            clearTimeout(timeoutID);
+        } else {
         removeSnakeCell();
         addSnakeCell();
         changeSnakeCellCoordinates();
+        };
     }, 1000 / fps);
 }
 
@@ -116,16 +128,22 @@ function keydownHandler(e){
             }
             break;
     }
-    if(firstTime){
+    if(firstTime && (e.keyCode === 37 ||
+                    e.keyCode === 38 ||
+                    e.keyCode === 39 ||
+                    e.keyCode === 40)){
         snakeMove();
         firstTime = false;
     }
 }
 
 // Checks whether the snake hit the wall
-function checkGameOver(){
-    if(y + yStep > gridSize - 1 || y + yStep < 0 || x + xStep > gridSize - 1 || x + xStep < 0) {
-        document.querySelector("#message").innerHTML = "Game Over";
-        return;
+function isGameOver() {
+    if (y + yStep > gridSize - 1 ||
+        y + yStep < 0 ||
+        x + xStep > gridSize - 1 ||
+        x + xStep < 0) {
+            setMessage("Game Over");
+            return true;
     }
 }
