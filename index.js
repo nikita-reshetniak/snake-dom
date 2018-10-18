@@ -103,7 +103,7 @@ function addSnake(){
 function snakeMove() {
     timeoutID = setTimeout(function () {
         idRequest = requestAnimationFrame(snakeMove);
-        if (isGameOver()) {
+        if (doesGameOver()) {
             setMessage("Game Over");
             cancelAnimationFrame(idRequest);
             clearTimeout(timeoutID);
@@ -116,7 +116,7 @@ function snakeMove() {
 }
 
 // Checks whether the snake hit the wall
-function isGameOver() {
+function doesGameOver() {
     if (y + yStep > gridEdge - 1 ||
         y + yStep < 0 ||
         x + xStep > gridEdge - 1 ||
