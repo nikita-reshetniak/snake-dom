@@ -6,6 +6,10 @@
     margin: 0 1px;
 }
 
-.activeCell{
+.snakeCell{
+    background-color: black;
+}
+
+.foodCell{
     background-color: black;
 }

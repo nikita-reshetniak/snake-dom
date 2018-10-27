@@ -11,10 +11,12 @@ var xStep = 0;
 var yStep = 0;
 var timeoutID;
 var idRequest;
-// For keydownHandler function
 var firstTime = true;
 var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
+var foodX = Math.floor(Math.random() * gridEdge);
+var foodY = Math.floor(Math.random() * gridEdge);
+var gridHasFood = true;
 
 function Cell(x, y){
     this.x = x;
@@ -27,6 +29,9 @@ setupGame();
 
 document.addEventListener("keydown", keydownHandler);
 
+//test
+// cells[5][7].classList.add("foodCell");
+
 function setupGame() {
     if (doesGridFitWindow()) {
         setMessage("Snake Game");
@@ -34,9 +39,40 @@ function setupGame() {
         makeGrid();
         addCellsToArray();
         addSnake();
+        generateFood();
     } else {
         setMessage("Too Big");
     }
+}
+
+function generateFood(){
+    while(doesPartOfSnake(foodY, foodX)){
+        setFoodCoordinates()
+    };
+    addFoodToGrid(foodY, foodX);
+}
+
+function setFoodCoordinates(){
+    foodX = Math.floor(Math.random() * gridEdge);
+    foodY = Math.floor(Math.random() * gridEdge);
+}
+
+function addFoodToGrid(y, x){
+    cells[y][x].classList.add("foodCell");
+}
+
+function doesPartOfSnake(y, x){
+return cells[y][x].classList.contains("snakeCell");
+}
+
+function doesGridHaveFood(){
+
+}
+
+function doesHeadCoverFood(){
+    var x = snakeArray[snakeArray.length - 1].x;
+    var y = snakeArray[snakeArray.length - 1].y;
+    return cells[y][x].classList.contains("foodCell");
 }
 
 function doesGridFitWindow(){
@@ -94,25 +130,48 @@ function addCellsToArray() {
 
 // Add snake to the center of grid
 function addSnake(){
-    cells[y][x - 2].classList.add("activeCell");
-    cells[y][x - 1].classList.add("activeCell");
-    cells[y][x].classList.add("activeCell");
+    cells[y][x - 2].classList.add("snakeCell");
+    cells[y][x - 1].classList.add("snakeCell");
+    cells[y][x].classList.add("snakeCell");
 }
 
-// Move the snake
-function snakeMove() {
+function gameLoop() {
     timeoutID = setTimeout(function () {
-        idRequest = requestAnimationFrame(snakeMove);
+        idRequest = requestAnimationFrame(gameLoop);
         if (doesGameOver()) {
             setMessage("Game Over");
             cancelAnimationFrame(idRequest);
             clearTimeout(timeoutID);
         } else {
-        removeSnakeCell();
-        addSnakeCell();
-        setSnakeCellCoordinates();
+        snakeMove();
+        if(!gridHasFood){
+            generateFood();
+        }
         };
     }, 1000 / fps);
+}
+
+function snakeMove() {
+    if(doesHeadCoverFood()){
+        removeFoodCell();
+        addSnakeCellToGrid();
+        addCellToSnakeArray();
+        gridHasFood = false;
+    } else {
+        removeSnakeCell();
+        addSnakeCellToGrid();
+        setSnakeCellCoordinates();
+    }
+}
+
+function removeFoodCell(){
+    var x = snakeArray[snakeArray.length - 1].x;
+    var y = snakeArray[snakeArray.length - 1].y;
+    cells[y][x].classList.remove("foodCell");
+}
+
+function addCellToSnakeArray(){
+    snakeArray.push(new Cell(x, y));
 }
 
 // Checks whether the snake hit the wall
@@ -129,17 +188,14 @@ function setMessage(mes){
     document.querySelector("#message").innerHTML = mes;
 }
 
-// Remove class "activeCell" from the cell
 function removeSnakeCell(){
-    cells[snakeArray[0].y][snakeArray[0].x].classList.remove("activeCell");
+    cells[snakeArray[0].y][snakeArray[0].x].classList.remove("snakeCell");
 }
 
-// Add class "activeCell" add next to the head cell
-function addSnakeCell(){
+function addSnakeCellToGrid(){
     x += xStep;
     y += yStep;
-    cells[y][x].classList.add("activeCell");
-
+    cells[y][x].classList.add("snakeCell");
 }
 
 function setSnakeCellCoordinates(){
@@ -147,7 +203,6 @@ function setSnakeCellCoordinates(){
         snakeArray[i].x = snakeArray[i+1].x;
         snakeArray[i].y = snakeArray[i+1].y;
     }
-
     snakeArray[snakeArray.length - 1].x = x;
     snakeArray[snakeArray.length - 1].y = y;
 }
@@ -184,7 +239,7 @@ function keydownHandler(e){
                     e.keyCode === 38 ||
                     e.keyCode === 39 ||
                     e.keyCode === 40)){
-        snakeMove();
+        gameLoop();
         firstTime = false;
     }
 }
