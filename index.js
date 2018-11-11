@@ -1,8 +1,10 @@
 var gridEdge = document.querySelector('[name="gridEdge"]').value;
 var gridCenter = Math.round(gridEdge/2);
-var gridEdgeLenght = gridEdge * cellEdge;
-var messageHeight = 58;
 var cellEdge = 10;
+var borderWidth = 5;
+var gridEdgeLenght = gridEdge * cellEdge + borderWidth * 2;
+var messageHeight = 81;
+var formHeight = 26;
 var cells = [];
 var fps = 10;
 var x = gridCenter;
@@ -65,10 +67,6 @@ function doesPartOfSnake(y, x){
 return cells[y][x].classList.contains("snakeCell");
 }
 
-function doesGridHaveFood(){
-
-}
-
 function doesHeadCoverFood(){
     var x = snakeArray[snakeArray.length - 1].x;
     var y = snakeArray[snakeArray.length - 1].y;
@@ -77,8 +75,9 @@ function doesHeadCoverFood(){
 
 function doesGridFitWindow(){
     gridEdge = document.querySelector('[name="gridEdge"]').value;
-    gridEdgeLenght = gridEdge * cellEdge;
-    if(!(gridEdgeLenght + messageHeight > windowHeight) && !(gridEdgeLenght > windowWidth)){
+    gridEdgeLenght = gridEdge * cellEdge + borderWidth * 2;
+    if(!(gridEdgeLenght + messageHeight + formHeight > windowHeight) &&
+       !(gridEdgeLenght > windowWidth)){
         return true;
     } else{
         return false;
@@ -88,13 +87,12 @@ function doesGridFitWindow(){
 function updateVariablesValues(){
     gridEdge = document.querySelector('[name="gridEdge"]').value;
     gridCenter = Math.round(gridEdge/2);
-    gridEdgeLenght = gridEdge * cellEdge;
+    gridEdgeLenght = gridEdge * cellEdge + borderWidth * 2;
     x = gridCenter;
     y = gridCenter - 1;
     snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)];
 }
 
-// Make grid of div elements
 function makeGrid(){
     var gridWrapper = document.createElement("div")
     var fragment = document.createDocumentFragment();
@@ -110,7 +108,33 @@ function makeGrid(){
     }
     gridWrapper.appendChild(fragment);
     Wrapper.appendChild(gridWrapper);
+    borderGrid();
+    setGridDivWidth();
 };
+
+function setGridDivWidth(){
+    var div = document.querySelector("#Wrapper > div");
+    div.style.width = (gridEdgeLenght + "px");
+}
+
+function borderGrid(){
+    var borderTop = document.querySelectorAll(".row-1 .cell");
+    var borderRight = document.querySelectorAll(".cell-" + gridEdge);
+    var borderBottom = document.querySelectorAll(".row-" + gridEdge + " .cell");
+    var borderLeft = document.querySelectorAll(".cell-1");
+    for(i = 0; i <= borderTop.length - 1; i++){
+        borderTop[i].style.borderTop = borderWidth + "px solid black";
+    }
+    for(i = 0; i <= borderRight.length - 1; i++){
+        borderRight[i].style.borderRight = borderWidth + "px solid black";
+    }
+    for(i = 0; i <= borderBottom.length - 1; i++){
+        borderBottom[i].style.borderBottom = borderWidth + "px solid black";
+    }
+    for(i = 0; i <= borderLeft.length - 1; i++){
+        borderLeft[i].style.borderLeft = borderWidth + "px solid black";
+    }
+}
 
 function removeGrid() {
     if (doesGridFitWindow()) {
@@ -174,14 +198,20 @@ function addCellToSnakeArray(){
     snakeArray.push(new Cell(x, y));
 }
 
-// Checks whether the snake hit the wall
 function doesGameOver() {
     if (y + yStep > gridEdge - 1 ||
         y + yStep < 0 ||
         x + xStep > gridEdge - 1 ||
-        x + xStep < 0) {
+        x + xStep < 0 ||
+        doesHitBody()){
             return true;
     }
+}
+
+function doesHitBody(){
+    if (cells[y + yStep][x + xStep].classList.contains("snakeCell")){
+            return true;
+        }
 }
 
 function setMessage(mes){
