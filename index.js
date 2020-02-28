@@ -1,275 +1,231 @@
-var gridEdge = document.querySelector('[name="gridEdge"]').value;
-var gridCenter = Math.round(gridEdge/2);
-var cellEdge = 10;
-var borderWidth = 5;
-var gridEdgeLenght = gridEdge * cellEdge + borderWidth * 2;
-var messageHeight = 81;
-var formHeight = 26;
-var cells = [];
-var fps = 10;
-var x = gridCenter;
-var y = gridCenter - 1;
-var xStep = 0;
-var yStep = 0;
-var timeoutID;
-var idRequest;
-var firstTime = true;
-var windowWidth = window.innerWidth;
-var windowHeight = window.innerHeight;
-var foodX = Math.floor(Math.random() * gridEdge);
-var foodY = Math.floor(Math.random() * gridEdge);
-var gridHasFood = true;
 
-function Cell(x, y){
-    this.x = x;
-    this.y = y;
-}
+class Model {
+    constructor() {
+        this.cells= [];
+        this.snake = {
+            body: [],
+            direction: {
+                x: 0, 
+                y: 0
+            }
+        }
+    }
 
-var snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)];
+    setupGrid(columnsNumber, rowsNumber) {
+        const rows = new Array(rowsNumber).fill(null);
+        // rows.forEach((item, i, rows) => {
+        //     rows[i] = new Array(columnsNumber).fill({x: 0, y: 0});
+        //     rows[i].forEach((cell, j) => {
+        //         cell.x = j + 1;
+        //         cell.y = rows.length - i;
+        //     });
+        // });
+        for (let i = 0; i < rows.length; i++) {
+            rows[i] = [];
+            for (let j = 0; j < columnsNumber; j++) {
+                rows[i].push({x: j + 1, y: rowsNumber - i})
+            }
+        }
+        this.cells = rows;
+    }
 
-setupGame();
 
-document.addEventListener("keydown", keydownHandler);
+    setupSnake() {
+        const yCenter = Math.floor(this.cells.length / 2);
+        const xCenter = Math.floor(this.cells[0].length / 2);
+        this.snake.body.push(this.cells[yCenter - 2][xCenter - 1]);
+        this.snake.body.push(this.cells[yCenter - 1][xCenter - 1]);
+        this.snake.body.push(this.cells[yCenter][xCenter - 1]);
+    }
 
-//test
-// cells[5][7].classList.add("foodCell");
+    driveSnake() {
+        this.snake.body.forEach((_, index, body) => {
+            if (body[body.length - index - 2]) {
+                body[body.length - index - 1] = this.snake.body[body.length - index - 2];
+            }
+        });
 
-function setupGame() {
-    if (doesGridFitWindow()) {
-        setMessage("Snake Game");
-        updateVariablesValues();
-        makeGrid();
-        addCellsToArray();
-        addSnake();
-        generateFood();
-    } else {
-        setMessage("Too Big");
+        // Assign new values to 'head'.
+        this.snake.body[0] = Object.assign({}, this.snake.body[0])
+        this.snake.body[0].x += this.snake.direction.x;
+        this.snake.body[0].y += this.snake.direction.y;
     }
 }
 
-function generateFood(){
-    while(doesPartOfSnake(foodY, foodX)){
-        setFoodCoordinates()
+class View {
+    constructor() {
+        this.innerWidth = window.innerWidth - 3;
+        this.innerHeight = window.innerHeight - 3;
+        this.cellSizeRange = this.range(11, 16);
+        this.cellSize = this.determineCellSize(this.cellSizeRange);
+        this.rows = Math.floor(this.innerHeight / this.cellSize);
+        this.columns = Math.floor(this.innerWidth / this.cellSize);
+        this.app = this.getElement('#root');
+    }
+
+    range(start, end) {
+        if(start === end) return [start];
+        return [start, ...this.range(start + 1, end)];
+
     };
-    addFoodToGrid(foodY, foodX);
-}
 
-function setFoodCoordinates(){
-    foodX = Math.floor(Math.random() * gridEdge);
-    foodY = Math.floor(Math.random() * gridEdge);
-}
-
-function addFoodToGrid(y, x){
-    cells[y][x].classList.add("foodCell");
-}
-
-function doesPartOfSnake(y, x){
-return cells[y][x].classList.contains("snakeCell");
-}
-
-function doesHeadCoverFood(){
-    var x = snakeArray[snakeArray.length - 1].x;
-    var y = snakeArray[snakeArray.length - 1].y;
-    return cells[y][x].classList.contains("foodCell");
-}
-
-function doesGridFitWindow(){
-    gridEdge = document.querySelector('[name="gridEdge"]').value;
-    gridEdgeLenght = gridEdge * cellEdge + borderWidth * 2;
-    if(!(gridEdgeLenght + messageHeight + formHeight > windowHeight) &&
-       !(gridEdgeLenght > windowWidth)){
-        return true;
-    } else{
-        return false;
+    determineCellSize(range) {
+        const widthDiff = new Array(range.length).fill(null);
+        const heightDiff = new Array(range.length).fill(null);
+        range.forEach((item, index) => {
+            widthDiff[index] = this.innerWidth % item;
+            heightDiff[index] = this.innerHeight % item;
+        });
+        const diff = widthDiff.map((_, index, arr) => {
+            return arr[index] + heightDiff[index];
+        });
+        // const min = diff.indexOf(Math.min(...diff));
+        const indexOfMin = diff.reduce((iMin, item, index, arr) => {
+            return item < arr[iMin] ? index : iMin;
+        }, 0);
+        return range[indexOfMin];
     }
-}
 
-function updateVariablesValues(){
-    gridEdge = document.querySelector('[name="gridEdge"]').value;
-    gridCenter = Math.round(gridEdge/2);
-    gridEdgeLenght = gridEdge * cellEdge + borderWidth * 2;
-    x = gridCenter;
-    y = gridCenter - 1;
-    snakeArray = [new Cell(x - 2, y), new Cell(x - 1, y), new Cell(x, y)];
-}
-
-function makeGrid(){
-    var gridWrapper = document.createElement("div")
-    var fragment = document.createDocumentFragment();
-    for(var i = 1; i <= gridEdge; i++){
-        var divRow = document.createElement("div");
-        divRow.classList.add("row", "row-" + i);
-        for(var j = 1; j <= gridEdge; j++){
-            var divCell = document.createElement("div");
-            divCell.classList.add("cell", "cell-" + j);
-            divRow.appendChild(divCell);
-        }
-        fragment.appendChild(divRow);
+    renderGrid(cells) {
+        const wrapper = this.createElement('div', 'gridWrapper');
+        cells.forEach((item, i) => {
+            const row = this.createElement('div', 'row');
+            item.forEach((item ,j) => {
+                const cell = this.createElement('div', 'cell', `x-${j + 1}_y-${cells.length - i}`);
+                cell.style.width = `${this.cellSize - 1}px`;
+                cell.style.height = `${this.cellSize - 1}px`;
+                row.appendChild(cell);
+            });
+            wrapper.style.marginTop = `${(this.innerHeight - this.cellSize * this.rows)/2}px`
+            wrapper.appendChild(row);
+        });
+        this.app.appendChild(wrapper);
     }
-    gridWrapper.appendChild(fragment);
-    Wrapper.appendChild(gridWrapper);
-    borderGrid();
-    setGridDivWidth();
-};
 
-function setGridDivWidth(){
-    var div = document.querySelector("#Wrapper > div");
-    div.style.width = (gridEdgeLenght + "px");
-}
-
-function borderGrid(){
-    var borderTop = document.querySelectorAll(".row-1 .cell");
-    var borderRight = document.querySelectorAll(".cell-" + gridEdge);
-    var borderBottom = document.querySelectorAll(".row-" + gridEdge + " .cell");
-    var borderLeft = document.querySelectorAll(".cell-1");
-    for(i = 0; i <= borderTop.length - 1; i++){
-        borderTop[i].style.borderTop = borderWidth + "px solid black";
-    }
-    for(i = 0; i <= borderRight.length - 1; i++){
-        borderRight[i].style.borderRight = borderWidth + "px solid black";
-    }
-    for(i = 0; i <= borderBottom.length - 1; i++){
-        borderBottom[i].style.borderBottom = borderWidth + "px solid black";
-    }
-    for(i = 0; i <= borderLeft.length - 1; i++){
-        borderLeft[i].style.borderLeft = borderWidth + "px solid black";
-    }
-}
-
-function removeGrid() {
-    if (doesGridFitWindow()) {
-        var parent = document.querySelector("#Wrapper");
-        var child = document.querySelector("#Wrapper").children[0];
-        parent.removeChild(child);
-    }
-}
-
-// Make Array with all cells of grid
-function addCellsToArray() {
-    var rows = document.querySelectorAll(".row");
-    for(var i = 0; i < gridEdge; i++) {
-        cells[i] = rows[i].children;
-    }
-}
-
-// Add snake to the center of grid
-function addSnake(){
-    cells[y][x - 2].classList.add("snakeCell");
-    cells[y][x - 1].classList.add("snakeCell");
-    cells[y][x].classList.add("snakeCell");
-}
-
-function gameLoop() {
-    timeoutID = setTimeout(function () {
-        idRequest = requestAnimationFrame(gameLoop);
-        if (doesGameOver()) {
-            setMessage("Game Over");
-            cancelAnimationFrame(idRequest);
-            clearTimeout(timeoutID);
-        } else {
-        snakeMove();
-        if(!gridHasFood){
-            generateFood();
-        }
+    renderSnake(body) {
+        let tailCell = this.getElement('.tail');
+        if(tailCell) {
+            tailCell.classList.remove('tail');
+            tailCell.classList.remove('snake');
         };
-    }, 1000 / fps);
-}
 
-function snakeMove() {
-    if(doesHeadCoverFood()){
-        removeFoodCell();
-        addSnakeCellToGrid();
-        addCellToSnakeArray();
-        gridHasFood = false;
-    } else {
-        removeSnakeCell();
-        addSnakeCellToGrid();
-        setSnakeCellCoordinates();
+        const head = body[0];
+        const headCell = this.getElement(`#x-${head.x}_y-${head.y}`);
+        headCell.classList.add('snake');
+
+        const tail = body[body.length - 1];
+        tailCell = this.getElement(`#x-${tail.x}_y-${tail.y}`);
+        tailCell.classList.add('tail');
+    }
+
+    renderTable(cells) {
+        const table = this.createElement('table');
+        cells.forEach((item) => {
+            const row = this.createElement('tr');
+            item.forEach(() => {
+                const cell = this.createElement('td', 'cell');
+                row.appendChild(cell);
+            });
+            table.appendChild(row);
+        });
+        this.app.appendChild(table);
+    }
+    
+    createElement(tag, className, id) {
+        const elemnt = document.createElement(tag);
+        if (className) elemnt.classList.add(className);
+        if (id) elemnt.id = id;
+        return elemnt;
+    }
+    
+    getElement(selector) {
+        const element = document.querySelector(selector);
+        return element;
+    }
+    
+    getElements(selector) {
+        const element = document.querySelectorAll(selector);
+        return element;
+    }
+
+    bindDriveSnake(handler) {
+        window.addEventListener('keydown', event => {
+            // console.log(event);
+            handler(event.key);
+        });
+    }
+    
+    bindStartGame(handler) {
+        window.addEventListener('keydown', event => {
+            handler(event.key);
+        });
     }
 }
 
-function removeFoodCell(){
-    var x = snakeArray[snakeArray.length - 1].x;
-    var y = snakeArray[snakeArray.length - 1].y;
-    cells[y][x].classList.remove("foodCell");
-}
-
-function addCellToSnakeArray(){
-    snakeArray.push(new Cell(x, y));
-}
-
-function doesGameOver() {
-    if (y + yStep > gridEdge - 1 ||
-        y + yStep < 0 ||
-        x + xStep > gridEdge - 1 ||
-        x + xStep < 0 ||
-        doesHitBody()){
-            return true;
+class Controller {
+    constructor(model, view) {
+        this.model = model;
+        this.view = view;
+        this.view.bindStartGame(this.handleStartGame);
+        this.view.bindDriveSnake(this.handleDriveSnake);
     }
-}
 
-function doesHitBody(){
-    if (cells[y + yStep][x + xStep].classList.contains("snakeCell")){
-            return true;
+    handleStartGame = (e) => {
+        switch (e) {
+            // UP
+            case 'W':
+            case 'w':
+            case "ArrowUp":
+            // RIGHT
+            case 'D':
+            case 'd':
+            case'ArrowRight':
+            // LEFT
+            case 'A':
+            case 'a':
+            case 'ArrowLeft':
+                this.animate();
+                window.removeEventListener('keydown', this.handleStartGame);
+                break;
         }
-}
+    } 
 
-function setMessage(mes){
-    document.querySelector("#message").innerHTML = mes;
-}
-
-function removeSnakeCell(){
-    cells[snakeArray[0].y][snakeArray[0].x].classList.remove("snakeCell");
-}
-
-function addSnakeCellToGrid(){
-    x += xStep;
-    y += yStep;
-    cells[y][x].classList.add("snakeCell");
-}
-
-function setSnakeCellCoordinates(){
-    for(var i = 0; i < snakeArray.length - 1; i++){
-        snakeArray[i].x = snakeArray[i+1].x;
-        snakeArray[i].y = snakeArray[i+1].y;
+    handleDriveSnake = (e) => {
+        switch (e) {
+            case 'W':
+            case 'w':
+            case "ArrowUp":
+                this.model.snake.direction = {x: 0, y: 1};
+                break;
+            case 'D':
+            case 'd':
+            case'ArrowRight':
+                this.model.snake.direction = {x: 1, y: 0};
+                break;
+            case 'S':
+            case 's':
+            case 'ArrowDown':
+                this.model.snake.direction = {x: 0, y: -1};
+                break;
+            case 'A':
+            case 'a':
+            case 'ArrowLeft':
+                this.model.snake.direction = {x: -1, y: 0};
+                break;
+        }
     }
-    snakeArray[snakeArray.length - 1].x = x;
-    snakeArray[snakeArray.length - 1].y = y;
-}
 
-// Check pressed key
-function keydownHandler(e){
-    switch (e.keyCode) {
-        case 37:
-            if (xStep === 0) {
-                xStep = -1;
-                yStep = 0
-            }
-            break;
-        case 38:
-            if (yStep === 0) {
-                xStep = 0;
-                yStep = -1;
-            }
-            break;
-        case 39:
-            if (xStep === 0) {
-                xStep = 1;
-                yStep = 0;
-            }
-            break;
-        case 40:
-            if (yStep === 0) {
-                xStep = 0;
-                yStep = 1;
-            }
-            break;
-    }
-    if(firstTime && (e.keyCode === 37 ||
-                    e.keyCode === 38 ||
-                    e.keyCode === 39 ||
-                    e.keyCode === 40)){
-        gameLoop();
-        firstTime = false;
+    animate = () => {
+        setTimeout(() => {
+            window.requestAnimationFrame(this.animate);
+            this.view.renderSnake(this.model.snake.body);
+            this.model.driveSnake();
+        }, 1000 / 10);
     }
 }
+
+const app = new Controller(new Model(), new View());
+app.model.setupGrid(app.view.columns, app.view.rows);
+app.view.renderGrid(app.model.cells);
+app.model.setupSnake();
+app.view.renderSnake(app.model.snake.body);

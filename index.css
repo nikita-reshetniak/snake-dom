@@ -1,16 +1,40 @@
+body{
+    margin: 0;
+}
+
+#root {
+    font-size: 0;
+    padding: 0;
+}
+
+.gridWrapper {
+    border: 1px solid black;
+    padding: 1px 0 0 1px;
+    display: block;
+    text-align: center;
+}
+
+.row {
+    display: inline-block;
+}
+
 #message{
     text-align: center;
 }
 
 .cell{
-    height: 10px;
-    width: 10px;
-    /* border: 1px solid black; */
+    /* height: 10px; */
+    /* width: 10px; */
+    margin-top: -1px;
+    margin-left: -1px;
+    border: 1px solid #F8F9F9;
+    /* border-collapse: collapse; */
+    /* padding: 0; */
     display: inline-block;
     /* margin: 0 1px; */
 }
 
-.snakeCell{
+.snake{
     background-color: black;
 }
 
