@@ -5,6 +5,7 @@ body{
 #root {
     font-size: 0;
     padding: 0;
+    /* margin: 0; */
 }
 
 .gridWrapper {
@@ -12,14 +13,11 @@ body{
     padding: 1px 0 0 1px;
     display: block;
     text-align: center;
+    z-index: 50;
 }
 
 .row {
     display: inline-block;
-}
-
-#message{
-    text-align: center;
 }
 
 .cell{
@@ -38,21 +36,23 @@ body{
     background-color: black;
 }
 
-.foodCell{
+.food{
     background-color: black;
 }
 
-#Wrapper > div{
-    font-size: 0;
-    margin: 0 auto;
+#scoreWrapper{
+    position: fixed;
+    font-size: 24px;
+    color: black;
 }
 
-form{
-    margin-top: 5px;
+#gameOverMenuWrapper{
+    position: absolute;
+    text-align: center;
+    width: 33%;
+    left: 33%;
+    top: 15%;
+    font-size: 24px;
+    background-color: black;
+    color: white;
 }
-
-#inputWrapper{
-    width: 275px;
-    margin: 0 auto;
-}
-
