@@ -1,5 +1,6 @@
 body{
     margin: 0;
+    background-color: rgb(150, 177, 111);
 }
 
 #root {
@@ -21,23 +22,28 @@ body{
 }
 
 .cell{
-    /* height: 10px; */
-    /* width: 10px; */
     margin-top: -1px;
     margin-left: -1px;
-    border: 1px solid #F8F9F9;
+    border: 1px solid rgb(150, 177, 111);
     /* border-collapse: collapse; */
     /* padding: 0; */
     display: inline-block;
     /* margin: 0 1px; */
+    border-radius: 30%;
 }
 
-.snake{
-    background-color: black;
+.snake {
+    background-color: rgb(54, 56, 30);
+    /* border-radius: 30%; */
+}
+
+.head {
+
 }
 
 .food{
-    background-color: black;
+    background-color: rgb(54, 56, 30);
+    /* border-radius: 40%; */
 }
 
 #scoreWrapper{

@@ -187,7 +187,7 @@ class View {
 
     setupSnake(body) {
         const head = this.getElement(`#x-${body[0].x}_y-${body[0].y}`);
-        head.classList.add('snake');
+        head.classList.add('snake', 'head');
         const middle = this.getElement(`#x-${body[1].x}_y-${body[1].y}`);
         middle.classList.add('snake');
         const tail = this.getElement(`#x-${body[2].x}_y-${body[2].y}`);
@@ -198,7 +198,7 @@ class View {
         // Remove tail
         this.getElement('.tail').classList.remove('snake');
         this.getElement('.tail').classList.remove('tail');
-
+        
         // Add new head
         const head = this.getElement(`#x-${body[0].x}_y-${body[0].y}`);
         head.classList.add('snake');
