@@ -14,7 +14,7 @@ class Model {
             y: 0
         }
         this.score = 0
-        this.speed = 1;
+        this.speed = 13;
     }
 
     setupGrid(columnsNumber, rowsNumber) {
@@ -38,15 +38,19 @@ class Model {
             }
         }
         this.score = 0;
-        this.speed = 1;
+        this.speed = 13;
     }
 
     setupSnake() {
         const yCenter = Math.floor(this.cells.length / 2);
+        const yStart = this.cells.length - 1;
         const xCenter = Math.floor(this.cells[0].length / 2);
-        this.snake.body.push(this.cells[yCenter - 2][xCenter - 1]);
-        this.snake.body.push(this.cells[yCenter - 1][xCenter - 1]);
-        this.snake.body.push(this.cells[yCenter][xCenter - 1]);
+        // this.snake.body.push(this.cells[yCenter - 2][xCenter - 1]);
+        // this.snake.body.push(this.cells[yCenter - 1][xCenter - 1]);
+        // this.snake.body.push(this.cells[yCenter][xCenter - 1]);
+        this.snake.body.push(this.cells[yStart - 5][xCenter - 1]);
+        this.snake.body.push(this.cells[yStart - 4][xCenter - 1]);
+        this.snake.body.push(this.cells[yStart - 3][xCenter - 1]);
     }
 
     driveSnake() {
@@ -85,7 +89,7 @@ class Model {
     }
 
     increaseSpeed() {
-        this.speed += 0.2;
+        this.speed += 2;
     }
 
     checkCollisions(body, columns, rows, direction) {
@@ -316,7 +320,7 @@ class Controller {
                     this.view.renderFood(this.model.food);
                 }    
             }
-        }, 1000 / (13 * this.model.speed));
+        }, 1000 / this.model.speed);
     }
 
     init() {
