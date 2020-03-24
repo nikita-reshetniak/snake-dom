@@ -174,6 +174,17 @@ class View {
         this.getElement('#scoreWrapper').innerHTML = `Score: ${score}`;
     }
 
+    showInstruction() {
+        const wrapper = this.createElement('div', false, 'instruction');
+        const text = document.createTextNode('Use WASD or arrow keys to play');
+        wrapper.appendChild(text);
+        this.app.appendChild(wrapper);
+    }
+
+    removeInstruction() {
+        this.app.removeChild(this.getElement('#instruction'));
+    }
+
     setupSnake(body) {
         const head = this.getElement(`#x-${body[0].x}_y-${body[0].y}`);
         head.classList.add('snake');
@@ -326,6 +337,7 @@ class Controller {
     init() {
         app.model.setupGrid(app.view.columns, app.view.rows);
         app.view.setupScore();
+        app.view.showInstruction();
         app.view.renderGrid(app.model.cells);
         app.model.setupSnake();
         app.view.setupSnake(app.model.snake.body);
@@ -345,6 +357,7 @@ class Controller {
                 // LEFT
                 case 'KeyA':
                 case 'ArrowLeft':
+                    app.view.removeInstruction();
                     app.animate();
                     window.removeEventListener('keydown', handleStartGame);
                     break;

@@ -46,6 +46,17 @@ body{
     color: black;
 }
 
+#instruction{
+    position: absolute;
+    text-align: center;
+    width: 33%;
+    left: 33%;
+    top: 15%;
+    font-size: 24px;
+    background-color: black;
+    color: white;
+}
+
 #gameOverMenuWrapper{
     position: absolute;
     text-align: center;
