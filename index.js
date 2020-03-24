@@ -243,7 +243,7 @@ class View {
 
     bindDriveSnake(handler) {
         window.addEventListener('keydown', event => {
-            handler(event.key);
+            handler(event.code);
         });
     }
     
@@ -268,29 +268,25 @@ class Controller {
 
     handleDriveSnake = (e) => {
         switch (e) {
-            case 'W':
-            case 'w':
+            case 'KeyW':
             case "ArrowUp":
                 if(this.model.snake.direction.y != -1) {
                     this.model.snake.direction = {x: 0, y: 1};
                 }
                 break;
-            case 'D':
-            case 'd':
+            case 'KeyD':
             case'ArrowRight':
                 if(this.model.snake.direction.x != -1) {
                     this.model.snake.direction = {x: 1, y: 0};
                 }
                 break;
-            case 'S':
-            case 's':
+            case 'KeyS':
             case 'ArrowDown':
                 if(this.model.snake.direction.y != 1) {
                     this.model.snake.direction = {x: 0, y: -1};
                 }
                 break;
-            case 'A':
-            case 'a':
+            case 'KeyA':
             case 'ArrowLeft':
                 if(this.model.snake.direction.x != 1) {
                     this.model.snake.direction = {x: -1, y: 0};
@@ -320,7 +316,7 @@ class Controller {
                     this.view.renderFood(this.model.food);
                 }    
             }
-        }, 1000 / (10 * this.model.speed));
+        }, 1000 / (13 * this.model.speed));
     }
 
     init() {
@@ -335,18 +331,15 @@ class Controller {
         window.addEventListener('keydown', handleStartGame);
 
         function handleStartGame(e) {
-            switch (e.key) {
+            switch (e.code) {
                 // UP
-                case 'W':
-                case 'w':
+                case 'KeyW':
                 case "ArrowUp":
                 // RIGHT
-                case 'D':
-                case 'd':
+                case 'KeyD':
                 case 'ArrowRight':
                 // LEFT
-                case 'A':
-                case 'a':
+                case 'KeyA':
                 case 'ArrowLeft':
                     app.animate();
                     window.removeEventListener('keydown', handleStartGame);
