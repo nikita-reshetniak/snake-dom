@@ -189,22 +189,39 @@ class View {
         const head = this.getElement(`#x-${body[0].x}_y-${body[0].y}`);
         head.classList.add('snake', 'head');
         const middle = this.getElement(`#x-${body[1].x}_y-${body[1].y}`);
-        middle.classList.add('snake');
+        middle.classList.add('snake', 'body');
         const tail = this.getElement(`#x-${body[2].x}_y-${body[2].y}`);
         tail.classList.add('snake', 'tail');
     }
 
     updateSnake(body) {
+
         // Remove tail
-        this.getElement('.tail').classList.remove('snake');
-        this.getElement('.tail').classList.remove('tail');
+        this.getElement('.tail').style.transform = '';
+        this.getElement('.tail').classList.remove('snake', 'tail');//'body', 'corner', 'tail');
         
         // Add new head
+        if(this.getElement('.head')) this.getElement('.head').classList.remove('head');
         const head = this.getElement(`#x-${body[0].x}_y-${body[0].y}`);
-        head.classList.add('snake');
+        head.classList.add('snake', 'head');
+
+        // Choose neck style
+        const neck = this.getElement(`#x-${body[1].x}_y-${body[1].y}`);
+        if (body[0].y > body[1].y) {
+            if (body[1].y == body[2].y){
+                neck.classList.add('snake', 'corner');
+                // neck.style.transform = `rotate(180deg)`;
+            } else {
+                neck.classList.add('snake', 'body');
+            }
+        } else if (body[0].y == body[1].y) {
+            neck.classList.add('snake', 'body');
+            neck.style.transform = `rotate(90deg)`;
+        }
 
         // Mark new tail
         const tail = this.getElement(`#x-${body[body.length - 1].x}_y-${body[body.length - 1].y}`);
+        tail.classList.remove('body', 'corner');
         tail.classList.add('tail');
     }
 

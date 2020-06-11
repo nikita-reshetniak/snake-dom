@@ -1,16 +1,23 @@
-body{
+:root {
+ --bg-color: rgb(163, 195, 61);
+ --snake-color: rgb(35, 55, 10);
+ --food-color: rgb(35, 55, 10);
+ --cell-size: 15px;
+ --pixel-size: 4px;
+}
+
+body {
     margin: 0;
-    background-color: rgb(150, 177, 111);
+    background-color: var(--bg-color);
 }
 
 #root {
     font-size: 0;
     padding: 0;
-    /* margin: 0; */
 }
 
 .gridWrapper {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     padding: 1px 0 0 1px;
     display: block;
     text-align: center;
@@ -21,38 +28,117 @@ body{
     display: inline-block;
 }
 
-.cell{
+.cell {
     margin-top: -1px;
     margin-left: -1px;
-    border: 1px solid rgb(150, 177, 111);
-    /* border-collapse: collapse; */
-    /* padding: 0; */
+    /* border: 1px solid var(--bg-color); */
+    border: 1px solid black;
     display: inline-block;
-    /* margin: 0 1px; */
-    border-radius: 30%;
 }
 
-.snake {
-    background-color: rgb(54, 56, 30);
-    /* border-radius: 30%; */
+.snake.body::before {
+    content: '';
+    display: block;
+    background-color: var(--snake-color);
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    margin-top: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    margin-left: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    box-shadow: 0 calc(0px - var(--pixel-size)) 0 0 var(--snake-color),
+    0 var(--pixel-size) 0 0 var(--snake-color),
+    var(--pixel-size) 0 0 0 var(--snake-color),
+    var(--pixel-size) var(--pixel-size) 0 0 var(--snake-color),
+    var(--pixel-size) calc(var(--pixel-size) * 2) 0 0 var(--snake-color);
 }
 
-.head {
+.snake.horizontal::before {
+    content: '';
+    display: block;
+    background-color: var(--bg-color);
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    box-shadow: 0 4.2px 0 0 var(--snake-color),
+    0 8.4px 0 0 var(--snake-color),
+    4.2px 8.4px 0 0 var(--snake-color),
+    -4.2px 4.2px 0 0 var(--snake-color),
+    -8.4px 4.2px 0 0 var(--snake-color),
+    -4.2px 8.4px 0 0 var(--snake-color);
+}
 
+.snake.corner::before {
+    content: '';
+    display: block;
+    background-color: var(--snake-color);
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    margin-top: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    margin-left: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    box-shadow: 0 calc(0px - var(--pixel-size)) 0 0 var(--snake-color),
+    var(--pixel-size) 0 0 0 var(--snake-color);
+}
+
+.snakeCornerLeftTop::before {
+    content: '';
+    display: block;
+    background-color: var(--bg-color);
+    width: 4px;
+    height: 4px;
+    box-shadow: -4.2px 4.2px 0 0 var(--snake-color),
+    0 -4px 0 0 var(--snake-color),
+    -4.2px 0 0 0 var(--snake-color),
+    -8.4px 4.2px 0 0 var(--snake-color),
+    -7px 8.4px 0 0 var(--snake-color)
+}
+
+.snake.head::before {
+    content: '';
+    display: block;
+    background-color: var(--bg-color);
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    margin-top: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    margin-left: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+
+    box-shadow: var(--pixel-size) calc(0px - var(--pixel-size) * 2) 0 0 var(--snake-color),
+    var(--pixel-size) calc(0px - var(--pixel-size)) 0 0 var(--snake-color),
+    var(--pixel-size) 0 0 0 var(--snake-color),
+    var(--pixel-size) var(--pixel-size) 0 0 var(--snake-color),
+    var(--pixel-size) calc(var(--pixel-size) * 2) 0 0 var(--snake-color),
+    0 calc(0px - var(--pixel-size) * 2) 0 0 var(--snake-color),
+    0 calc(0px - var(--pixel-size)) 0 0 var(--snake-color),
+    0 calc(var(--pixel-size)) 0 0 var(--snake-color),
+    calc(0px - var(--pixel-size)) 0 0 0 var(--snake-color);
+}
+
+.snake.tail::before{
+    content: '';
+    display: block;
+    background-color: var(--snake-color);
+    width: var(--pixel-size);
+    height: var(--pixel-size);
+    margin-top: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    margin-left: calc(var(--cell-size) / 2 - var(--pixel-size) / 2);
+    box-shadow: 0 calc(0px - var(--pixel-size)) 0 0 var(--snake-color),
+    0 var(--pixel-size) 0 0 var(--snake-color),
+    0 calc(var(--pixel-size) * 2) 0 0 var(--snake-color),
+    var(--pixel-size) 0 0 0 var(--snake-color),
+    var(--pixel-size) var(--pixel-size) 0 0 var(--snake-color),
+    var(--pixel-size) calc(var(--pixel-size) * 2) 0 0 var(--snake-color),
+    var(--pixel-size) calc(var(--pixel-size) * 3) 0 0 var(--snake-color),
+    var(--pixel-size) calc(var(--pixel-size) * 4) 0 0 var(--snake-color);
 }
 
 .food{
-    background-color: rgb(54, 56, 30);
-    /* border-radius: 40%; */
+    background-color: var(--food-color);
 }
 
-#scoreWrapper{
+#scoreWrapper {
     position: fixed;
     font-size: 24px;
     color: black;
 }
 
-#instruction{
+#instruction {
     position: absolute;
     text-align: center;
     width: 33%;
@@ -63,7 +149,7 @@ body{
     color: white;
 }
 
-#gameOverMenuWrapper{
+#gameOverMenuWrapper {
     position: absolute;
     text-align: center;
     width: 33%;
